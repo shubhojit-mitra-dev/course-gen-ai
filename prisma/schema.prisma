@@ -1,0 +1,51 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"  // The Prisma Client JavaScript generator
+}
+
+datasource db {
+  provider = "postgresql"  // Use the PostgreSQL provider
+  url      = env("DATABASE_URL") // Use the DATABASE_URL environment variable
+}
+
+model Account {
+  id                String  @id @default(cuid()) // cuid() generates a unique string ID
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String? @db.Text // Optional TEXT field
+  access_token      String? @db.Text // Optional TEXT field
+  expires_at        Int? // Optional integer field
+  token_type        String? // Optional string field
+  scope             String? // Optional string field
+  id_token          String? @db.Text // Optional TEXT field
+  session_state     String? // Optional string field
+  user              User    @relation(fields: [userId], references: [id], onDelete: Cascade) // Foreign key relation
+
+  @@unique([provider, providerAccountId]) // Unique constraint on provider and providerAccountId
+}
+
+model Session {
+  id           String   @id @default(cuid()) // cuid() generates a unique string ID
+  sessionToken String   @unique // Unique session token
+  userId       String
+  expires      DateTime // DateTime field for expiration
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade) // Foreign key relation
+}
+
+model User {
+  id            String    @id @default(cuid()) // cuid() generates a unique string ID
+  name          String? // Optional string field
+  email         String?   @unique // Optional unique email field
+  emailVerified DateTime? // Optional DateTime field for email verification
+  image         String? // Optional string field for image URL
+  credits       Int       @default(10) // Integer field with default value
+  accounts      Account[] // One-to-many relation with Account
+  sessions      Session[] // One-to-many relation with Session
+}
