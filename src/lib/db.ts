@@ -1,12 +1,14 @@
-import { PrismaClient } from "@prisma/client";
+import Prisma from "@prisma/client";
 import "server-only";
+
+const { PrismaClient } = Prisma;
 
 declare global {
     // eslint-disable-next-line no-var
-    var cachedPrisma: PrismaClient;
+    var cachedPrisma: Prisma.PrismaClient;
 }
 
-export let prisma: PrismaClient;
+export let prisma: Prisma.PrismaClient;
 
 if (process.env.NODE_ENV === "production") {
     prisma = new PrismaClient();
