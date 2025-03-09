@@ -8,7 +8,7 @@
     "db:migrate": "prisma migrate deploy",
     "db:push": "prisma db push",
     "db:studio": "prisma studio",
-    "build": "next build",
+    "build": "pnpx prisma generate && next build",
     "start": "next start",
     "lint": "next lint"
   },
